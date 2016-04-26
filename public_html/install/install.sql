@@ -3397,7 +3397,8 @@ INSERT INTO `nuke_evolution` VALUES('collapsetype', '0');
 INSERT INTO `nuke_evolution` VALUES('analytics', '');
 INSERT INTO `nuke_evolution` VALUES('use_stream', '1');
 INSERT INTO `nuke_evolution` VALUES('html_auth', '1');
-
+INSERT INTO `nuke_evolution` VALUES('recaptcha_public_key', '');
+INSERT INTO `nuke_evolution` VALUES('recaptcha_private_key', '');
 -- --------------------------------------------------------
 
 --

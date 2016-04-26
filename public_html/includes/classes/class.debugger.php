@@ -20,12 +20,12 @@ class error_handler {
                 error_reporting(E_ALL); # report all errors
                 ini_set("display_errors", "1");
             } else {
-                error_reporting(E_ALL ^ E_NOTICE);
+                error_reporting(E_ALL);
             }
             $this->debug = true;
         } else if ($debug) {
             $this->debug = $debug;
-            error_reporting(E_ALL ^ E_NOTICE);
+            error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_STRICT);
         } else {
             if(!is_admin()) {
                 error_reporting(0);

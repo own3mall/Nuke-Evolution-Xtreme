@@ -283,6 +283,11 @@ function save_settings($sub) {
             } else {
                 $xcapfile = $_POST['xcapfile'];
                 $db->sql_query("UPDATE ".$prefix."_evolution SET evo_value='".$xcapfile."' WHERE evo_field='capfile'");
+                
+                $pubKey = $_POST['recap_public_key'];
+                $privKey =  $_POST['recap_private_key'];
+                $db->sql_query("INSERT INTO ".$prefix."_evolution VALUES('recaptcha_public_key', '".$pubKey."') ON DUPLICATE KEY UPDATE evo_value='".$pubKey."';");
+                $db->sql_query("INSERT INTO ".$prefix."_evolution VALUES('recaptcha_private_key', '".$privKey."') ON DUPLICATE KEY UPDATE evo_value='".$privKey."';");
             }
         break;
 

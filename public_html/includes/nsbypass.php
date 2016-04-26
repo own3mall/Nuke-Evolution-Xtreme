@@ -8,7 +8,7 @@
 /* See CREDITS.txt for ALL contributors                 */
 /********************************************************/
 
-error_reporting(E_ALL^E_NOTICE);
+error_reporting(E_ALL & ~E_DEPRECATED & ~E_NOTICE & ~E_STRICT);
 @ini_set('display_errors', 0);
 chdir("../");
 @require_once("mainfile.php");

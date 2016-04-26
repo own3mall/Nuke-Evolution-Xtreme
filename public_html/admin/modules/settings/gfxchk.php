@@ -119,9 +119,20 @@ if (GDSUPPORT) {
                     echo "</td></tr>\n";
                 }
             }
+            
+            // Google Recaptcha V2 Not a Robot Support Added by earnolmartin@gmail.com
+            echo "<tr><td><a href='https://www.google.com/recaptcha/admin' target='_blank'>Google Recaptcha</a> Site Key:</td><td>";
+            echo "<input type='text' name='recap_public_key' value='" . $evoconfig['recaptcha_public_key'] . "'>";
+            echo "</td></tr>\n";
+            echo "<tr><td><a href='https://www.google.com/recaptcha/admin' target='_blank'>Google Recaptcha</a> Secret Key:</td><td>";
+            echo "<input type='text' name='recap_private_key' value='" . $evoconfig['recaptcha_private_key'] . "'>";
+            echo "</td></tr>\n";      
+            
+            
             @closedir($dir);
         }
     }
+    
     echo "</table></fieldset><br />";
 }
 

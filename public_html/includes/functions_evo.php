@@ -707,7 +707,16 @@ function ValidateURL($url, $type, $where) {
 [ Mod:    Advanced Security Code Control      v1.0.0 ]
 ******************************************************/
 function security_code($gfxchk, $size='normal', $force=0) {
-    global $evoconfig;
+    global $evoconfig, $bgcolor2, $bgcolor1;
+    
+    $recapPriv = $evoconfig['recaptcha_private_key'];
+    $recapPub = $evoconfig['recaptcha_public_key'];
+    
+    // Fallback
+    if(((!isset($recapPriv) || empty($recapPriv)) || (!isset($recapPub) || empty($recapPub))) && $size == "recaptcha_v2"){
+		$size = 'stacked';
+	}
+    
     if(intval($gfxchk) == 0) {
         return '';
     }
@@ -723,28 +732,36 @@ function security_code($gfxchk, $size='normal', $force=0) {
     if (defined('CAPTCHA')) {
         switch($size) {
             case 'large':
-            $code .= "<tr><td>"._SECURITYCODE.":</td><td><img src='images/captcha.php?size=large' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'></td></tr>\n";
-            $code .= "<tr><td>"._TYPESECCODE.":</td><td><input type=\"text\" name=\"gfx_check\" size=\"10\" maxlength=\"10\" AutoComplete=\"off\"></td></tr>\n";
-            $code .= "\n";
-            break;
+				$code .= "<tr><td>"._SECURITYCODE.":</td><td><img src='images/captcha.php?size=large' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'></td></tr>\n";
+				$code .= "<tr><td>"._TYPESECCODE.":</td><td><input type=\"text\" name=\"gfx_check\" size=\"10\" maxlength=\"10\" AutoComplete=\"off\"></td></tr>\n";
+				$code .= "\n";
+				break;
             case 'normal':
-            $code .= "<tr><td>"._SECURITYCODE.":</td></tr><tr><td><img src='images/captcha.php?size=normal' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'></td></tr>\n";
-            $code .= "<tr><td>"._TYPESECCODE.":</td></tr><tr><td><input type=\"text\" name=\"gfx_check\" size=\"10\" maxlength=\"10\" AutoComplete=\"off\"></td></tr>\n";
-            $code .= "\n";
-            break;
+				$code .= "<tr><td>"._SECURITYCODE.":</td></tr><tr><td><img src='images/captcha.php?size=normal' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'></td></tr>\n";
+				$code .= "<tr><td>"._TYPESECCODE.":</td></tr><tr><td><input type=\"text\" name=\"gfx_check\" size=\"10\" maxlength=\"10\" AutoComplete=\"off\"></td></tr>\n";
+				$code .= "\n";
+				break;
             case 'small':
-            $code .= _SECURITYCODE.": <img src='images/captcha.php?size=small' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'>\n";
-            $code .= _TYPESECCODE.": <input type=\"text\" name=\"gfx_check\" size=\"10\" maxlength=\"10\" AutoComplete=\"off\">\n";
-            $code .= "\n";
-            break;
+				$code .= _SECURITYCODE.": <img src='images/captcha.php?size=small' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'>\n";
+				$code .= _TYPESECCODE.": <input type=\"text\" name=\"gfx_check\" size=\"10\" maxlength=\"10\" AutoComplete=\"off\">\n";
+				$code .= "\n";
+				break;
             case 'stacked':
-            $code .= _SECURITYCODE."<br /><img src='images/captcha.php?size=normal' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'><br />\n";
-            $code .= _TYPESECCODE." <br /><input type=\"text\" name=\"gfx_check\" size=\"10\" maxlength=\"10\" AutoComplete=\"off\">\n";
-            $code .= "<br />\n";
-            break;
+				$code .= _SECURITYCODE."<br /><img src='images/captcha.php?size=normal' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'><br />\n";
+				$code .= _TYPESECCODE." <br /><input type=\"text\" name=\"gfx_check\" size=\"10\" maxlength=\"10\" AutoComplete=\"off\">\n";
+				$code .= "<br />\n";
+				break;
             case 'demo':
                 $code .= "<img src='images/captcha.php?size=large' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'>";
-            break;
+				break;
+			case 'recaptcha_v2':
+				$code .= "<tr><td bgcolor='" . $bgcolor2 . "'><div class=\"textbold\">"._SECURITYCODE.":</div></td><td bgcolor='" . $bgcolor1 . "'>";
+				// Include the recaptcha script
+				$code .= "<script src='https://www.google.com/recaptcha/api.js' async defer></script>";
+				// Render not a robot div
+				$code .= "<div class='g-recaptcha' data-sitekey='" . $recapPub . "' style='display: inline-block'></div>";
+				$code .= "</td></tr>";
+				break;
         }
     } else {
         $code = "";

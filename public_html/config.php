@@ -122,7 +122,7 @@ $file_mode = 0666;
 |                                                         |
 | Default: true                                           |
 ---------------------------------------------------------*/
-$debug = true;
+$debug = false;
 
 /*----[ $use_cache ] -----=-------------------------------
 | Use caching of database fetched data                    |

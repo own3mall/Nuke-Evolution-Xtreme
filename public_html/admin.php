@@ -61,7 +61,7 @@ require_once(NUKE_ADMIN_DIR.'functions.php');
  [ Mod:     External Admin Functions           v1.0.0 ]
  ******************************************************/
 
-global $domain, $admin_file;
+global $domain, $admin_file, $evoconfig;
 
 /*****[BEGIN]******************************************
  [ Mod:    Admin IP Lock                       v2.1.0 ]
@@ -167,7 +167,20 @@ if ((isset($aid)) && (isset($pwd)) && (isset($op)) && ($op == "login")){
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/
     $gfxchk = array(1,5,6,7);
-    if (!security_code_check($_POST['gfx_check'], $gfxchk)){
+    
+    $passedCaptcha = false;        
+    if(isset($_POST['g-recaptcha-response'])){
+		require_once('includes/classes/recaptcha_v2/autoload.php');
+		$recaptcha = new \ReCaptcha\ReCaptcha($evoconfig['recaptcha_private_key']);
+		$resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_HOST']);
+		if ($resp->isSuccess()) {
+			// verified!
+			$passedCaptcha = true;
+		} else {
+			$errors = $resp->getErrorCodes();
+		}
+	}
+    if (!$passedCaptcha && !security_code_check($_POST['gfx_check'], $gfxchk)){
 /*****[END]********************************************
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/

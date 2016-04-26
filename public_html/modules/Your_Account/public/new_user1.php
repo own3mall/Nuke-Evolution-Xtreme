@@ -99,7 +99,7 @@ if (!defined('CNBYA')) {
     echo "<br /><span class='tiny'>("._BLANKFORAUTO.")</span><br /><span class='tiny'>("._YA_PASSLENGTH.")</span></td></tr>\n";
     echo "<tr><td bgcolor='$bgcolor2'><div class=\"textbold\">"._RETYPEPASSWORD.":</div></td><td bgcolor='$bgcolor1'><input type='password' name='user_password2' size='10' maxlength='".$ya_config['pass_max']."'><br /><span class='tiny'>("._BLANKFORAUTO.")</span><br /><span class='tiny'>("._YA_PASSLENGTH.")</span></td></tr>\n";
     $gfxchk = array(3,4,6);
-    $gfx = security_code($gfxchk, 'stacked');
+    $gfx = security_code($gfxchk, 'recaptcha_v2');
     if(!empty($gfx)) {
         echo "<tr><td bgcolor='$bgcolor2' colspan='2'><center>".$gfx."</center></td></tr>";
     }
