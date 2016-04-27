@@ -33,8 +33,18 @@ get_lang($module_name);
 $pagetitle = '- '._RECOMMEND;
 
 function RecommendSite() {
-    global $user, $cookie, $prefix, $db, $user_prefix, $module_name;
+    global $user, $cookie, $prefix, $db, $user_prefix, $module_name, $evoconfig;    
     include_once(NUKE_BASE_DIR.'header.php');
+    $useGRecaptcha = false;
+    
+    // Get recaptcha settings
+    $recapPriv = $evoconfig['recaptcha_private_key'];
+    $recapPub = $evoconfig['recaptcha_public_key'];
+    if(isset($recapPriv) && !empty($recapPriv) && isset($recapPub) && !empty($recapPub)){
+		$useGRecaptcha = true;
+	}
+    
+    
     title(_RECOMMEND);
     OpenTable();
     echo "<center><span class=\"content\"><strong>"._RECOMMEND."</strong></span></center><br /><br />"
@@ -48,15 +58,21 @@ function RecommendSite() {
     echo "<strong>"._FYOURNAME." </strong> <input type=\"text\" name=\"yname\" value=\"$yn\"><br /><br />\n"
         ."<strong>"._FYOUREMAIL." </strong> <input type=\"text\" name=\"ymail\" value=\"$ye\"><br /><br /><br />\n"
         ."<strong>"._FFRIENDNAME." </strong> <input type=\"text\" name=\"fname\"><br /><br />\n"
-        ."<strong>"._FFRIENDEMAIL." </strong> <input type=\"text\" name=\"fmail\"><br /><br />\n"
-        ."<input type=submit value="._SEND.">\n"
-        ."</form>\n";
+        ."<strong>"._FFRIENDEMAIL." </strong> <input type=\"text\" name=\"fmail\"><br /><br />\n";
+        
+    if($useGRecaptcha){
+		echo "<script src='https://www.google.com/recaptcha/api.js' async defer></script>";
+		echo "<div class='g-recaptcha' data-sitekey='" . $recapPub . "' style='display: inline-block'></div><br /><br />";
+	}
+    
+    echo "<input type=submit value="._SEND."><br /><br />\n";
+    echo "</form>\n";
     CloseTable();
     include_once(NUKE_BASE_DIR.'footer.php');
 }
 
 function SendSite($yname, $ymail, $fname, $fmail) {
-    global $sitename, $slogan, $nukeurl, $module_name;
+    global $sitename, $slogan, $nukeurl, $module_name, $evoconfig;
     $fname = stripslashes(Fix_Quotes(check_html(removecrlf($fname))));
     $fmail = validate_mail(stripslashes(check_html(removecrlf($fmail))));
     $yname = stripslashes(Fix_Quotes(check_html(removecrlf($yname))));
@@ -66,8 +82,35 @@ function SendSite($yname, $ymail, $fname, $fmail) {
     if (empty($fname) || empty($fmail) || empty($yname) || empty($ymail)) {
         redirect("modules.php?name=$module_name");
     } else {
-        evo_mail($fmail, $subject, $message, "FROM: \"$yname\" <$ymail>\nX-Mailer: PHP/" . phpversion());
-        redirect("modules.php?name=$module_name&op=SiteSent&fname=$fname");
+		$success = true;
+		
+		// Get recaptcha settings
+		$recapPriv = $evoconfig['recaptcha_private_key'];
+		$recapPub = $evoconfig['recaptcha_public_key'];
+		if(isset($recapPriv) && !empty($recapPriv) && isset($recapPub) && !empty($recapPub)){
+			$useGRecaptcha = true;
+		}
+		
+		if(isset($_POST['g-recaptcha-response']) && !empty($_POST['g-recaptcha-response'])){
+			require_once('includes/classes/recaptcha_v2/autoload.php');
+			$recaptcha = new \ReCaptcha\ReCaptcha($evoconfig['recaptcha_private_key']);
+			$resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_HOST']);
+			if (!$resp->isSuccess()) {
+				// Failed
+				$success = false;
+			}
+		}else{
+			if($useGRecaptcha){
+				$success = false;
+			}
+		}
+		
+		if($success){		
+			evo_mail($fmail, $subject, $message, "FROM: \"$yname\" <$ymail>\nX-Mailer: PHP/" . phpversion());
+			redirect("modules.php?name=$module_name&op=SiteSent&fname=$fname");
+		}else{
+			redirect("modules.php?name=$module_name");
+		}
    }
 }
 
