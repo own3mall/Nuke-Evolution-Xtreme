@@ -141,7 +141,11 @@ elseif ($step == 2) {
         while(false !== ($file = readdir($handle))) {
             if(preg_match('/(.*?)\.php/i', $file, $database)) {
                 if(strtolower($database[1]) != 'db' && strtolower($database[1]) != 'db-old') {
-                    echo "<option value='".strtolower($database[1])."'>".ucfirst($database[1])."</option>";
+                    echo "<option value='".strtolower($database[1])."'";
+                    if(strtolower($database[1]) == "mysqli"){
+						echo " selected";
+					}
+                    echo ">".ucfirst($database[1])."</option>";
                 }
             }
         }
