@@ -70,9 +70,9 @@ function FriendSend($sid) {
 }
 
 function SendStory($sid, $yname, $ymail, $fname, $fmail) {
-    global $sitename, $nukeurl, $prefix, $db, $module_name;
+    global $sitename, $nukeurl, $prefix, $db, $module_name, $evoconfig;
 
-    if (!security_code_check($_POST['gfx_check'], 'force')) {
+    if (!security_code_check_recaptcha() && !security_code_check($_POST['gfx_check'], 'force')) {
         include_once(NUKE_BASE_DIR."header.php");
         OpenTable();
         echo '<center>'._GFX_FAILURE.'</center>';

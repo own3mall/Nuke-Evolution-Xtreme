@@ -108,6 +108,7 @@ function pageLocation(o,t){
 // and don't work anyways.
 // Modify mouse move routine while loading so that hideSelectBox()
 // can be called from the correct location
+/*
 if (!(olNs4 || olOp || olIe55 || navigator.userAgent.indexOf('Netscape6') != -1)) {
     var MMStr = olMouseMove.toString();
     var strRe = /(if\s*\(o3_allowmove\s*==\s*1.*\)\s*)/;
@@ -124,6 +125,7 @@ if (!(olNs4 || olOp || olIe55 || navigator.userAgent.indexOf('Netscape6') != -1)
     f = capExtent.onmousemove.toString().match(/function[ ]+(\w*)\(/);
     if (f&&f[1] != 'annoymous') capExtent.onmousemove = olMouseMove;
 }
+*/
 
 
 ////////

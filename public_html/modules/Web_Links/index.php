@@ -214,7 +214,7 @@ function AddLink() {
             .""._LDESCRIPTION."<br /><textarea name=\"description\" cols=\"60\" rows=\"5\"></textarea><br /><br /><br />"
             .""._YOURNAME.": <input type=\"text\" name=\"auth_name\" size=\"30\" maxlength=\"60\"><br />"
             .""._YOUREMAIL.": <input type=\"text\" name=\"email\" size=\"30\" maxlength=\"60\"><br /><br />"
-            ."<table>".security_code(array(7), true, 1)."</table>"
+            ."<table>".security_code(array(7), 'recaptcha_v2', 1)."</table>"
             ."<input type=\"hidden\" name=\"l_op\" value=\"Add\">"
             ."<input type=\"submit\" value=\""._ADDURL."\"> "._GOBACK."<br /><br />"
             ."</form>";
@@ -233,13 +233,13 @@ function AddLink() {
 }
 
 function Add($title, $url, $auth_name, $cat, $description, $email) {
-    global $prefix, $db, $user, $cookie, $cache;
+    global $prefix, $db, $user, $cookie, $cache, $evoconfig;
     $result = $db->sql_query("SELECT url from ".$prefix."_links_links where url='$url'");
     $numrows = $db->sql_numrows($result);
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Security Code Control      v1.0.0 ]
  ******************************************************/
-    if (!security_code_check($_POST['gfx_check'], 'force')) {
+    if (!security_code_check_recaptcha() && !security_code_check($_POST['gfx_check'], 'force')) {
         OpenTable();
         echo '<center>'._GFX_FAILURE.'</center>';
         CloseTable();

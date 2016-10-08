@@ -1,6 +1,6 @@
 <?php
 
-// eXtreme Styles mod cache. Generated on Fri, 25 Feb 2011 10:34:09 +0000 (time=1298630049)
+// eXtreme Styles mod cache. Generated on Fri, 07 Oct 2016 08:24:11 -0600 (time=1475850251)
 
 ?><script language="javascript" type="text/javascript" src="<?php echo isset($this->vars['U_CFI_JSLIB']) ? $this->vars['U_CFI_JSLIB'] : $this->lang('U_CFI_JSLIB'); ?>"></script>
 <script language="javascript" type="text/javascript">

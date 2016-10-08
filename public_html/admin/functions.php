@@ -167,7 +167,7 @@ function login() {
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/
     $gfxchk = array(1,5,6,7);
-    echo security_code($gfxchk, 'large');
+    echo security_code($gfxchk, 'recaptcha_v2');
 /*****[END]********************************************
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/

@@ -71,7 +71,7 @@ $form_block .= "<div class=\"textbold\">"._YOUREMAIL.":</div>";
 $form_block .= "<input type=\"text\" name=\"sender_email\" value=\"$sender_email\" size=\"30\"><br /><br />";
 $form_block .= "<div class=\"textbold\">"._MESSAGE.":</div class=\"textbold\">";
 $form_block .= "<textarea name=\"message\" cols=\"50\" rows=\"10\" style=\"wrap:virtual\">$message</textarea><br /><br />";
-$form_block .= "<table>".security_code(array(7), 'normal', 1)."</table>";
+$form_block .= "<table>".security_code(array(7), 'recaptcha_v2', 1)."</table>";
 $form_block .= "<input type=\"hidden\" name=\"opi\" value=\"ds\">";
 $form_block .= "<input type=\"submit\" name=\"submit\" value=\""._SEND."\"><br />";
 $form_block .= "</form></div>";
@@ -84,7 +84,7 @@ if ($opi != 'ds') {
 /*****[BEGIN]******************************************
  [ Mod:    Advanced Security Code Control      v1.0.0 ]
  ******************************************************/
-    if (!security_code_check($_POST['gfx_check'], 'force')) {
+    if (!security_code_check_recaptcha() && !security_code_check($_POST['gfx_check'], 'force')) {
         echo '<div class="texterrorcenter">'._GFX_FAILURE.'</div>';
         CloseTable();
         include_once(NUKE_BASE_DIR.'footer.php');

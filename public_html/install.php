@@ -71,13 +71,20 @@ if(isset($_POST['download_file']) && !empty($_SESSION['configData']) && !isset($
     exit;
 }
 if ($step >= 5){
-    if (!mysql_connect($_SESSION['dbhost'], $_SESSION['dbuser'], $_SESSION['dbpass']))
-    {
-        die ($install_lang['couldnt_connect'] . mysql_error());
-    }
-    if (!mysql_select_db($_SESSION['dbname'])) {
-        die ($install_lang['couldnt_select_db'] . mysql_error());
-    }
+	if(function_exists("mysql_connect")){
+		if (!mysql_connect($_SESSION['dbhost'], $_SESSION['dbuser'], $_SESSION['dbpass']))
+		{
+			die ($install_lang['couldnt_connect'] . mysql_error());
+		}
+		if (!mysql_select_db($_SESSION['dbname'])) {
+			die ($install_lang['couldnt_select_db'] . mysql_error());
+		}
+	}else{
+		$connection = @mysqli_connect($_SESSION['dbhost'], $_SESSION['dbuser'], $_SESSION['dbpass'], $_SESSION['dbname']);
+		if(!$connection){
+			die ($install_lang['couldnt_connect'] . mysqli_error($connection));
+		}
+	}
 }
 if ($step == 0) {
     include('install/header.php');

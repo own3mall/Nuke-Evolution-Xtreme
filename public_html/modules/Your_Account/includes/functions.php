@@ -361,11 +361,11 @@ function mmain($user) {
         echo "</table>";
         CloseTable();
         OpenTable();
-        echo "<table border=\"0\"><form action=\"modules.php?name=$module_name\" method=\"post\">\n";
+        echo "<form action=\"modules.php?name=$module_name\" method=\"post\"><table border=\"0\">\n";
         echo "<tr><td>"._NICKNAME.":</td><td><input type=\"text\" name=\"username\" size=\"15\" maxlength=\"25\"></td></tr>\n";
         echo "<tr><td>"._PASSWORD.":</td><td><input type=\"password\" name=\"user_password\" size=\"15\" maxlength=\"20\" AutoComplete=\"off\"></td></tr>\n";
         $cnbchk = array(2,4,5,7);
-        echo security_code($cnbchk, true);
+        echo security_code($cnbchk, 'recaptcha_v2', true);
         echo "<input type=\"hidden\" name=\"redirect\" value=$redirect>\n";
         echo "<input type=\"hidden\" name=\"mode\" value=$mode>\n";
         echo "<input type=\"hidden\" name=\"f\" value=$f>\n";
@@ -374,7 +374,7 @@ function mmain($user) {
         echo "<input type=\"hidden\" name=\"op\" value=\"login\">\n";
         echo "<tr><td colspan='2'><input type=\"submit\" value=\""._LOGIN."\">";
         if ($ya_config['useactivate'] == 0) { echo "<br />("._BESUREACT.")\n"; }
-        echo "</td></tr></form></table><br />\n\n";
+        echo "</td></tr></table></form><br />\n\n";
         CloseTable();
         include_once(NUKE_BASE_DIR.'footer.php');
     } elseif (is_user()) {

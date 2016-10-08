@@ -198,13 +198,22 @@ function validate_data($post) {
         return $error;
     }
 
-    if (!($server_check = @mysql_connect($dbhost, $dbuser, $dbpass))) {
-        $error .= "<tr><td align=\"center\"><font color=red>" . $install_lang['connection_failed'] . "</font></td></tr>";
-    }
+	if(function_exists("mysql_connect")){
+		if (!($server_check = @mysql_connect($dbhost, $dbuser, $dbpass))) {
+			$error .= "<tr><td align=\"center\"><font color=red>" . $install_lang['connection_failed'] . "</font></td></tr>";
+		}
 
-    if (!(@mysql_select_db($dbname))) {
-        $error .= "<tr><td align=\"center\"><font color=red>" . $install_lang['connection_failed2'] . "</font></td></tr>";
-    }
+		if (!(@mysql_select_db($dbname))) {
+			$error .= "<tr><td align=\"center\"><font color=red>" . $install_lang['connection_failed2'] . "</font></td></tr>";
+		}
+	}
+	
+	if(function_exists("mysqli_connect")){
+		if (!($server_check = @mysqli_connect($dbhost, $dbuser, $dbpass, $dbname))) {
+			$error .= "<tr><td align=\"center\"><font color=red>" . $install_lang['connection_failed'] . "</font></td></tr>";
+		}
+	}
+	
     //@mysql_close($server_check);
 
     if (isset($error) && !empty($error)) {
@@ -235,7 +244,12 @@ function validate_data($post) {
 function server_check() {
     global $install_lang, $server_check;
 
-    $sql_ver = @mysql_get_server_info();
+	if(function_exists("mysql_get_server_info")){
+		$sql_ver = @mysql_get_server_info();
+	}else{
+		$connection = @mysqli_connect($_SESSION['dbhost'], $_SESSION['dbuser'], $_SESSION['dbpass'], $_SESSION['dbname']);
+		$sql_ver = @mysqli_get_server_info();
+	}
 	
 	$message = $error = '';
 
@@ -261,13 +275,19 @@ function server_check() {
     if (empty($message)) {
         $message .= "<tr><td align=\"center\"><font color=green>" . $install_lang['checks_good'] . "</td></tr>";
     }
-    @mysql_close($server_check);
+    
+    if(function_exists("mysql_close")){
+		@mysql_close($server_check);
+	}else{
+		@mysqli_close($connection);
+	}
     return $message;
 }
 
 function do_sql($install_file) {
     global $nuke_name, $next_step, $step, $install_lang, $prefix, $user_prefix;
 	
+	echo $_SESSION['dbhost'];
 	$message = '';
 
     if(!$handle = @fopen ($install_file, "r"))
@@ -345,12 +365,24 @@ function do_sql($install_file) {
                 $data_buffer = str_replace("`nuke_", "`".$prefix."_", $data_buffer);
             }
 
-            @mysql_query($data_buffer);
-
-            if ($errors && mysql_errno())
-            {
-                $message .= "<tr><td align=\"center\"><font color=red>" . $install_lang['sql_error'] . mysql_errno().": ".mysql_error()."<br />".$data_buffer."</td></tr>";
-            }
+			if(function_exists("mysql_query")){
+				@mysql_query($data_buffer);
+			}else{
+				$connection = @mysqli_connect($_SESSION['dbhost'], $_SESSION['dbuser'], $_SESSION['dbpass'], $_SESSION['dbname']);
+				@mysqli_query($connection, $data_buffer);
+			}
+			
+			if(function_exists("mysql_errno")){
+				if ($errors && mysql_errno())
+				{
+					$message .= "<tr><td align=\"center\"><font color=red>" . $install_lang['sql_error'] . mysql_errno().": ".mysql_error()."<br />".$data_buffer."</td></tr>";
+				}
+			}else{
+				if ($errors && mysqli_errno($connection))
+				{
+					$message .= "<tr><td align=\"center\"><font color=red>" . $install_lang['sql_error'] . mysql_errno().": ".mysql_error()."<br />".$data_buffer."</td></tr>";
+				}
+			}
             $data_buffer = '';
             $last_char = "\n";
             $started_query = 0;
@@ -375,45 +407,90 @@ function site_form($display = 1) {
     $sql = "SELECT *
             FROM " . $_SESSION['prefix'] . "_bbconfig";
 
-    if(!$result = mysql_query($sql))
-    {
-        $error .= "<tr><td align=center>" . $install_lang['get_config_error'] . mysql_error() . "</td></tr>";
-    }
+	if(function_exists("mysql_query")){
+		if(!$result = mysql_query($sql))
+		{
+			$error .= "<tr><td align=center>" . $install_lang['get_config_error'] . mysql_error() . "</td></tr>";
+		}
+	}else{
+		$connection = @mysqli_connect($_SESSION['dbhost'], $_SESSION['dbuser'], $_SESSION['dbpass'], $_SESSION['dbname']);
+		$result = mysqli_query($connection, $sql);
+		if(!$result){
+			$error .= "<tr><td align=center>" . $install_lang['get_config_error'] . mysqli_error($connection) . "</td></tr>";
+		}
+	}
+	
+	if(function_exists("mysql_fetch_assoc")){
+		while( $row = @mysql_fetch_assoc($result) )
+		{
+			$config_name = $row['config_name'];
+			$config_value = $row['config_value'];
+			$default_config[$config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
 
-    while( $row = @mysql_fetch_assoc($result) )
-    {
-        $config_name = $row['config_name'];
-        $config_value = $row['config_value'];
-        $default_config[$config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
+			$new[$config_name] = ( isset($HTTP_POST_VARS[$config_name]) ) ? $HTTP_POST_VARS[$config_name] : $default_config[$config_name];
 
-        $new[$config_name] = ( isset($HTTP_POST_VARS[$config_name]) ) ? $HTTP_POST_VARS[$config_name] : $default_config[$config_name];
+			if ($config_name == 'cookie_name')
+			{
+				$cookie_name = str_replace('.', '_', $new['cookie_name']);
+			}
 
-        if ($config_name == 'cookie_name')
-        {
-            $cookie_name = str_replace('.', '_', $new['cookie_name']);
-        }
+			if( isset($HTTP_POST_VARS['submit']) )
+			{
+				$sql = "UPDATE " . $_SESSION['prefix'] . "_bbconfig SET
+						config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
+						WHERE config_name = '$config_name'";
+				if( !mysql_query($sql) )
+				{
+					$error .="<tr><td align=center>" . $install_lang['update_fail'] . " $config_name <br />" . mysql_error() . "</td></tr>";
+					return $error;
+				}
+				if($config_name == "server_name") {
+					$sql = "UPDATE " . $_SESSION['prefix'] . "_config SET
+						  nukeurl = 'http://" . str_replace("\'", "''", $new[$config_name]) . "'";
+					if( !mysql_query($sql) )
+					{
+						$error .="<tr><td align=center>" . $install_lang['update_fail'] . " $config_name <br />" . mysql_error() . "</td></tr>";
+						return $error;
+					}
+				}
+			}
+		}
+	}else{
+		while( $row = @mysqli_fetch_assoc($result) )
+		{
+			$config_name = $row['config_name'];
+			$config_value = $row['config_value'];
+			$default_config[$config_name] = isset($HTTP_POST_VARS['submit']) ? str_replace("'", "\'", $config_value) : $config_value;
 
-        if( isset($HTTP_POST_VARS['submit']) )
-        {
-            $sql = "UPDATE " . $_SESSION['prefix'] . "_bbconfig SET
-                    config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
-                    WHERE config_name = '$config_name'";
-            if( !mysql_query($sql) )
-            {
-                $error .="<tr><td align=center>" . $install_lang['update_fail'] . " $config_name <br />" . mysql_error() . "</td></tr>";
-                return $error;
-            }
-            if($config_name == "server_name") {
-                $sql = "UPDATE " . $_SESSION['prefix'] . "_config SET
-                      nukeurl = 'http://" . str_replace("\'", "''", $new[$config_name]) . "'";
-                if( !mysql_query($sql) )
-                {
-                    $error .="<tr><td align=center>" . $install_lang['update_fail'] . " $config_name <br />" . mysql_error() . "</td></tr>";
-                    return $error;
-                }
-            }
-        }
-    }
+			$new[$config_name] = ( isset($HTTP_POST_VARS[$config_name]) ) ? $HTTP_POST_VARS[$config_name] : $default_config[$config_name];
+
+			if ($config_name == 'cookie_name')
+			{
+				$cookie_name = str_replace('.', '_', $new['cookie_name']);
+			}
+
+			if( isset($HTTP_POST_VARS['submit']) )
+			{
+				$sql = "UPDATE " . $_SESSION['prefix'] . "_bbconfig SET
+						config_value = '" . str_replace("\'", "''", $new[$config_name]) . "'
+						WHERE config_name = '$config_name'";
+				if( !mysqli_query($connection, $sql) )
+				{
+					$error .="<tr><td align=center>" . $install_lang['update_fail'] . " $config_name <br />" . mysql_error() . "</td></tr>";
+					return $error;
+				}
+				if($config_name == "server_name") {
+					$sql = "UPDATE " . $_SESSION['prefix'] . "_config SET
+						  nukeurl = 'http://" . str_replace("\'", "''", $new[$config_name]) . "'";
+					if( !mysqli_query($connection, $sql) )
+					{
+						$error .="<tr><td align=center>" . $install_lang['update_fail'] . " $config_name <br />" . mysql_error() . "</td></tr>";
+						return $error;
+					}
+				}
+			}
+		}
+	}
 	
 	$form = '';
 	

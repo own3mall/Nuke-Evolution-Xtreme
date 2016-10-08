@@ -556,10 +556,24 @@ if ( $row = $db->sql_fetchrow($result) )
 
             if (!empty($user_sig))
             {
-              $user_sig = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $user_sig . '<'), 1, -1));
+				// own3mall
+				// old
+				/* $user_sig = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $user_sig . '<'), 1, -1)); */
+				
+				$callback = function($m) use ($orig_word, $replacement_word){ 
+					return preg_replace($orig_word, $replacement_word, $m[0]);
+				};
+				$user_sig = str_replace('\"', '"', substr(@preg_replace_callback('#(\>(((?>([^><]+|(?R)))*)\<))#s', $callback, '>' . $user_sig . '<'), 1, -1));
             }
 
-            $message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1));
+			// own3mall
+			// old
+			/* $message = str_replace('\"', '"', substr(@preg_replace('#(\>(((?>([^><]+|(?R)))*)\<))#se', "@preg_replace(\$orig_word, \$replacement_word, '\\0')", '>' . $message . '<'), 1, -1)); */
+			
+			$callback = function($m) use ($orig_word, $replacement_word){ 
+				return preg_replace($orig_word, $replacement_word, $m[0]);
+			};
+            $message = str_replace('\"', '"', substr(@preg_replace_callback('#(\>(((?>([^><]+|(?R)))*)\<))#s', $callback, '>' . $message . '<'), 1, -1));
         }
 
         //

@@ -159,6 +159,6 @@ class cache {
 
 global $use_cache;
 // Set up the cache class reference
-$cache =& new cache($use_cache);
+$cache = new cache($use_cache);
 
 ?>

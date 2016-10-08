@@ -58,7 +58,7 @@ if (($lidinfo['sid'] == 0) || ($lidinfo['sid'] == 1 AND is_user()) || ($lidinfo[
     $datekey = date("F j");
     $rcode = hexdec(md5($_SERVER['HTTP_USER_AGENT'] . $sitekey . $checkpass . $datekey));
     $code = substr($rcode, 2, $evoconfig['codesize']);
-    if (!security_code_check($_POST['gfx_check'], 'force') AND $dl_config['usegfxcheck'] == 1) {
+    if (!security_code_check_recaptcha() && !security_code_check($_POST['gfx_check'], 'force') AND $dl_config['usegfxcheck'] == 1) {
       include_once(NUKE_BASE_DIR."header.php");
       title(_DL_PASSERR);
       OpenTable();

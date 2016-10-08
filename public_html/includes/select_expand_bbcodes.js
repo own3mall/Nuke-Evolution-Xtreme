@@ -178,7 +178,11 @@ function SXBB_onResize()
 
 function SXBB_evalSize(cmd)
 {
-    for( var id in SXBB ) SXBB[id].resize(cmd);
+    for( var id in SXBB ){
+		if (SXBB.hasOwnProperty(id)) {
+			SXBB[id].resize(cmd);
+		}
+	}
 }
 
 if( window.addEventListener )

@@ -376,12 +376,37 @@ class InputFilter {
         $source = html_entity_decode($source, ENT_QUOTES, "ISO-8859-1");
         //Convert enties without semicolons
         $source = preg_replace('#(&\#x*)([0-9A-F]+);*#iu', "$1$2;", $source);
+        
         //Convert to decimal
-        $source = preg_replace('/&#0{4,5}(\d+);/me',"chr(\\1)", $source);
+        
+        // own3mall
+		// old
+		/* $source = preg_replace('/&#0{4,5}(\d+);/me',"chr(\\1)", $source); */	
+		$callback = function($m){ 
+			return chr($m[1]);
+		};
+        $source = preg_replace_callback('/&#0{4,5}(\d+);/m', $callback, $source);
+        
         // convert decimal
-        $source = preg_replace('/&#(\d+);/me',"chr(\\1)", $source);                // decimal notation
+      
+        // own3mall
+		// old
+		/*  $source = preg_replace('/&#(\d+);/me',"chr(\\1)", $source);     */	
+		$callback = function($m){ 
+			return chr($m[1]);
+		};
+        $source = preg_replace_callback('/&#(\d+);/m', $callback, $source);                // decimal notation
+        
         // convert hex
-        $source = preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)", $source);    // hex notation
+        
+        // own3mall
+		// old
+		/*  $source = preg_replace('/&#x([a-f0-9]+);/mei',"chr(0x\\1)", $source); */        
+		$callback = function($m){ 
+			return chr("0x" . $m[1]);
+		};
+        $source = preg_replace_callback('/&#x([a-f0-9]+);/mi',$callback, $source);    // hex notation
+        
         //Convert newlines
         $source = preg_replace('#(&\#*\w+)[\x00-\x20]+;#U', "$1;", $source);
         

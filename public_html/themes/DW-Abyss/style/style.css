@@ -225,3 +225,12 @@ td.inlinead {
   background-color: #e0e0e0; background-image: url(../forums/images/fback.gif); background-repeat: repeat-x; border: #000000; border-style: solid; border-width: 1px; text-align: center;
 }
 /*ENDD Inline Banner Ad*/
+
+/* own3mall overrides */
+img.blackdot{
+	width: 1px;
+	height: 27px;
+	border: 0px;
+	padding-left: 5px;
+	padding-right: 5px;
+}

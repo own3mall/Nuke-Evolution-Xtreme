@@ -6,7 +6,7 @@
 	
 	if (($lidinfo['sid'] == 0) || ($lidinfo['sid'] == 1 AND is_user())  || ($lidinfo['sid'] == 2 AND is_mod_admin($module_name)) || ($lidinfo['sid'] > 2 AND of_group($priv))) 
 	{
-		if (!security_code_check($_POST['gfx_check'], 'force') AND $dl_config['usegfxcheck'] == 1) 
+		if (!security_code_check_recaptcha() && !security_code_check($_POST['gfx_check'], 'force') AND $dl_config['usegfxcheck'] == 1) 
 		{
 			include_once(NUKE_BASE_DIR."header.php");
 		  	title(_DL_PASSERR);

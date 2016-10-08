@@ -39,7 +39,10 @@ function evouserinfo_get_addon_all () {
 function evouserinfo_expand_collapse_start($name) {
     global $evouserinfo_ec;
     if (!$evouserinfo_ec) return "<br />";
-    return "&nbsp;&nbsp;&nbsp;<img src=\"/images/minus.gif\" class=\"showstate\" name=\"minus\" width=\"9\" height=\"9\" border=\"0\" alt=\"\" style=\"cursor: pointer;\" onClick=\"expandcontent(this, '".$name."')\"><div id=\"".$name."\" class=\"switchcontent\">";
+    
+    $image = get_plus_minus_image();
+    
+    return "&nbsp;&nbsp;&nbsp;<img src=\"" . $image['minus'] . "\" class=\"showstate\" name=\"minus\" width=\"9\" height=\"9\" border=\"0\" alt=\"\" style=\"cursor: pointer;\" onClick=\"expandcontent(this, '".$name."')\"><div id=\"".$name."\" class=\"switchcontent\">";
 }
 
 function evouserinfo_expand_collapse_end() {

@@ -327,7 +327,7 @@ function overlib() {
 	if (o3_delay == 0) {
 		return runHook("olMain", FREPLACE);
  	} else {
-		o3_delayid = setTimeout("runHook('olMain', FREPLACE)", o3_delay);
+		o3_delayid = setTimeout("runHook('olMain', FREPLACE);", o3_delay);
 		return false;
 	}
 }

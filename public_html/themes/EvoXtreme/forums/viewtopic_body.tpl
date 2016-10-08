@@ -39,7 +39,7 @@
 	</td>
 	<td align="left" valign="middle" style="padding-top: 2px;" nowrap="nowrap">
 		<a href="http://twitter.com/share" class="twitter-share-button" data-text="Tweet from" data-count="horizontal" data-via="EvolutionXtreme">Tweet</a>
-		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+		<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 	</td>
     <td align="left" valign="middle" width="100%"><span class="nav">&nbsp;&nbsp;&nbsp;<a href="{U_INDEX}" class="nav">{L_INDEX}</a><!-- IF PARENT_FORUM --> -> <a class="nav" href="{U_VIEW_PARENT_FORUM}">{PARENT_FORUM_NAME}</a><!-- ENDIF --> 
       -> <a href="{U_VIEW_FORUM}" class="nav">{FORUM_NAME}</a></span></td>
@@ -169,7 +169,7 @@
 	</td>
 	<td align="left" valign="middle" style="padding-top: 2px;" nowrap="nowrap">
 		<a href="http://twitter.com/share" class="twitter-share-button" data-text="Tweet from" data-count="horizontal" data-via="EvolutionXtreme">Tweet</a>
-		<script type="text/javascript" src="http://platform.twitter.com/widgets.js"></script>
+		<script type="text/javascript" src="https://platform.twitter.com/widgets.js"></script>
 	</td>
     <td align="left" valign="middle" width="100%">
 		<span class="nav"><a href="{U_INDEX}" class="nav">{L_INDEX}</a><!-- IF PARENT_FORUM --> -> <a class="nav" href="{U_VIEW_PARENT_FORUM}">{PARENT_FORUM_NAME}</a><!-- ENDIF --> 

@@ -605,7 +605,7 @@ function showlisting($lid)
 			//echo "        <tr>\n";
 			if ($dl_config['usegfxcheck'] == 1) 
 			{
-				echo security_code(1, 'stacked', 1);
+				echo security_code(1, 'recaptcha_v2', 1);
 			}
 			echo "    </td>\n";
 			echo "  </tr>";	

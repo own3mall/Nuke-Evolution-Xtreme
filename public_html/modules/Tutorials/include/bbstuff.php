@@ -322,7 +322,15 @@ function insert_bbcode_uid($text, $uid){
 	$text = preg_replace("#\[i\](.*?)\[/i\]#si", "[i:$uid]\\1[/i:$uid]", $text);
 
 	// [img]image_url_here[/img] code..
-	$text = preg_replace("#\[img\]((ht|f)tp://)([^\r\n\t<\"]*?)\[/img\]#sie", "'[img:$uid]\\1' . str_replace(' ', '%20', '\\3') . '[/img:$uid]'", $text);
+	// OLD
+	// $text = preg_replace("#\[img\]((ht|f)tp://)([^\r\n\t<\"]*?)\[/img\]#sie", "'[img:$uid]\\1' . str_replace(' ', '%20', '\\3') . '[/img:$uid]'", $text);
+      
+    $callback = function($m) use ($uid){ 
+		return "[img:$uid]" . $m[1] . str_replace(' ', '%20', $m[3]) . "[/img:$uid]"; 
+	};
+	$text = preg_replace_callback("#\[img\]((ht|f)tp://)([^\r\n\t<\"]*?)\[/img\]#si", $callback, $text);
+	
+      
         // bbcode_box Mod
         // [fade] and [/fade] for faded text.
 		$text = preg_replace("#\[fade\](.*?)\[/fade\]#si", "[fade:$uid]\\1[/fade:$uid]", $text);

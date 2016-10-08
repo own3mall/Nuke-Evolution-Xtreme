@@ -95,7 +95,7 @@ if (($lidinfo['sid'] == 0) || ($lidinfo['sid'] == 1 AND is_user())  || ($lidinfo
           echo "<tr><td><strong>"._DL_TYPEPASS.":</strong></td><td><input type='text' name='passcode' size='10' maxlength='10'></td></tr>";
           echo "<input type='hidden' name='checkpass' value='$code'>";
         }*/
-        echo security_code(1,'normal', 1);
+        echo security_code(1,'recaptcha_v2', 1);
       }
       echo "<tr><td colspan='2' align='center'><input type='submit' name='"._DL_GOGET."' value='"._DL_GOGET."'></td></tr>";
       echo "</form>";

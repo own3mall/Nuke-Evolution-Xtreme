@@ -251,7 +251,7 @@ function tz_select($default, $select_name = 'timezone')
     echo "<tr><td bgcolor='$bgcolor2'><div class=\"textbold\">"._FORUMSDATE.":</div>"._FORUMSDATEMSG."</td><td bgcolor='$bgcolor1'><input type='text' name='user_dateformat' value='D M d, Y g:i a' size='15' maxlength='14'></td></tr>\n";
     echo "<tr><td bgcolor='$bgcolor2'><div class=\"textbold\">"._EXTRAINFO.":</div>"._OPTIONAL."<br />"._NOHTML."</td><td bgcolor='$bgcolor1'><textarea cols='50' rows='5' name='bio'></textarea><br />"._CANKNOWABOUT."</td></tr>\n";
 
-    $gfxchk = array(3,4,6);
+    $gfxchk = array(3,4,6,7);
     $gfx = security_code($gfxchk, 'recaptcha_v2');
     if(!empty($gfx)) {
         echo "<tr><td bgcolor='$bgcolor2' colspan='2'><center>".$gfx."</center></td></tr>";

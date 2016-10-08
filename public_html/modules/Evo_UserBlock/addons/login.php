@@ -44,7 +44,7 @@ function evouserinfo_login () {
     [ Mod:     Advanced Security Code Control     v1.0.0 ]
     ******************************************************/
     $gfxchk = array(2,4,5,7);
-    $evouserinfo_login .= security_code($gfxchk);
+    $evouserinfo_login .= security_code($gfxchk, 'recaptcha_v2', false, true);
     /*****[END]********************************************
     [ Mod:     Advanced Security Code Control     v1.0.0 ]
     ******************************************************/

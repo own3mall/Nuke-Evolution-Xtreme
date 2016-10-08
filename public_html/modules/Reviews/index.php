@@ -566,7 +566,7 @@ function postcomment($id, $title) {
     </select><br /><br />
     <strong>"._YOURCOMMENT."</strong><br />
     <textarea name=comments rows=10 cols=70></textarea><br />";
-    echo "<table>".security_code(array(7), 'normal', 1)."</table>";
+    echo "<table>".security_code(array(7), 'recaptcha_v2', 1)."</table>";
     echo "<br /><br />
     <input type=hidden name=rop value=savecomment>
     <input type=submit value=Submit>
@@ -576,7 +576,7 @@ function postcomment($id, $title) {
 }
 
 function savecomment($xanonpost, $uname, $id, $score, $comments) {
-    global $anonymous, $user, $cookie, $prefix, $db, $module_name, $anonpost;
+    global $anonymous, $user, $cookie, $prefix, $db, $module_name, $anonpost, $evoconfig;
 
     if(!isset($_POST) || empty($_POST)) {
         header("location: modules.php?name=$module_name&rop=showcontent&id=$id");
@@ -587,7 +587,7 @@ function savecomment($xanonpost, $uname, $id, $score, $comments) {
         die();
     }
     
-    if(!security_code_check($_POST['gfx_check'], 'force')) {
+    if(!security_code_check_recaptcha() && !security_code_check($_POST['gfx_check'], 'force')) {
         include_once(NUKE_BASE_DIR.'header.php');
         OpenTable();
         echo '<center>'._GFX_FAILURE.'</center>';

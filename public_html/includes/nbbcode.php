@@ -370,8 +370,22 @@ function shrink_url($url) {
 function makeclickable($text)
 {
     $ret = ' ' . $text;
-    $ret = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t<]*)#ise", "'\\1<a href=\"\\2\" rel=\"nofollow\" title=\"\\2\" target=\"_blank\">'.shrink_url('\\2').'</a>'", $ret);
-    $ret = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#ise", "'\\1<a href=\"http://\\2\" rel=\"nofollow\" target=\"_blank\" title=\"\\2\">'.shrink_url('\\2').'</a>'", $ret);
+    
+    // OLD
+    //$ret = preg_replace("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t<]*)#ise", "'\\1<a href=\"\\2\" rel=\"nofollow\" title=\"\\2\" target=\"_blank\">'.shrink_url('\\2').'</a>'", $ret);
+    $callback = function($m){ 
+		return $m[1] . '<a href="' . $m[2] . '" rel="nofollow" title="' . $m[2] . '" target="_blank">' . shrink_url($m[2]) . '</a>';
+	};
+	$ret = preg_replace_callback("#(^|[\n ])([\w]+?://[\w]+[^ \"\n\r\t<]*)#is", $callback, $ret);
+    
+    // OLD
+    // $ret = preg_replace("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#ise", "'\\1<a href=\"http://\\2\" rel=\"nofollow\" target=\"_blank\" title=\"\\2\">'.shrink_url('\\2').'</a>'", $ret);
+    $callback = function($m){ 
+		return $m[1] . '<a href="http://' . $m[2] . '" rel="nofollow" title="' . $m[2] . '" target="_blank">' . shrink_url($m[2]) . '</a>';
+	};
+	$ret = preg_replace_callback("#(^|[\n ])((www|ftp)\.[^ \"\t\n\r<]*)#is", $callback, $ret);
+    
+    // Original code which is fine
     $ret = preg_replace("#(^|[\n ])([a-z0-9&\-_\.]+?)@([\w\-]+\.([\w\-\.]+\.)*[\w]+)#i", "\\1 \\2 &#64; \\3", $ret);
     $ret = substr($ret, 1);
     return($ret);
@@ -397,8 +411,21 @@ function htmlunprepare($str, $nl2br=false) {
 function html2bb($text) {
     $text = preg_replace('/</', ' <', $text);
     $text = preg_replace('/<ol type="([a1])">/si', '/\[list=\\1\]', $text);
-    $text = preg_replace('/<(b|u|i|hr)>/sie', "'['.strtolower(\\1).']'", $text);
-    $text = preg_replace('/<\/(b|u|i|hr)>/sie', "'[/'.strtolower(\\1).']'", $text);
+    
+	// OLD
+	// $text = preg_replace('/<(b|u|i|hr)>/sie', "'['.strtolower(\\1).']'", $text);
+	$callback = function($m){ 
+		return "[" . strtolower($m[1]) . "]";
+	};
+	$text = preg_replace_callback('/<(b|u|i|hr)>/si', $callback, $text);
+	
+    // OLD
+    // $text = preg_replace('/<\/(b|u|i|hr)>/sie', "'[/'.strtolower(\\1).']'", $text);
+    $callback = function($m){ 
+		return "[/" . strtolower($m[1]) . "]";
+	};
+    $text = preg_replace_callback('/<\/(b|u|i|hr)>/si', $callback, $text);
+    
     $text = preg_replace('#<img(.*?)src="(.*?)\.(gif|png|jpg|jpeg)"(.*?)>#si', '[img]\\2.\\3[/img]', $text);
     $text = str_replace('<ul>', '[list]', $text);
     $text = str_replace('<li>', '[*]', $text);

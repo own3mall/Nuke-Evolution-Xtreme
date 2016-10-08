@@ -168,19 +168,7 @@ if ((isset($aid)) && (isset($pwd)) && (isset($op)) && ($op == "login")){
  ******************************************************/
     $gfxchk = array(1,5,6,7);
     
-    $passedCaptcha = false;        
-    if(isset($_POST['g-recaptcha-response'])){
-		require_once('includes/classes/recaptcha_v2/autoload.php');
-		$recaptcha = new \ReCaptcha\ReCaptcha($evoconfig['recaptcha_private_key']);
-		$resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_HOST']);
-		if ($resp->isSuccess()) {
-			// verified!
-			$passedCaptcha = true;
-		} else {
-			$errors = $resp->getErrorCodes();
-		}
-	}
-    if (!$passedCaptcha && !security_code_check($_POST['gfx_check'], $gfxchk)){
+    if (!security_code_check_recaptcha() && !security_code_check($_POST['gfx_check'], $gfxchk)){
 /*****[END]********************************************
  [ Mod:     Advanced Security Code Control     v1.0.0 ]
  ******************************************************/

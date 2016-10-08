@@ -585,7 +585,7 @@
 /*****[BEGIN]******************************************
 [ Mod:     Advanced Security Code Control     v1.0.0 ]
 ******************************************************/
-   		$content .= security_code(array(2,4,5,7), 'stacked');
+   		$content .= security_code(array(2,4,5,7), 'recaptcha_v2');
 /*****[END]********************************************
 [ Mod:     Advanced Security Code Control     v1.0.0 ]
 ******************************************************/

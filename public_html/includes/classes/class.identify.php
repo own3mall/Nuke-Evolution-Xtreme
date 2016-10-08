@@ -179,7 +179,7 @@ class identify {
             # PlayStation
             'identify::set_data(\'PlayStation\', \'\', \'\', \'Sony\', $data)',
         );
-        preg_replace($pattern, $replacement, $agent);
+        @preg_replace($pattern, $replacement, $agent);
         unset($pattern, $replacement);
         if (!isset($data['ua'])) {
             if ($find_bot) {

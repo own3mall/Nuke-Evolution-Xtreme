@@ -1,6 +1,6 @@
 <?php
 
-// eXtreme Styles mod cache. Generated on Fri, 25 Feb 2011 10:34:09 +0000 (time=1298630049)
+// eXtreme Styles mod cache. Generated on Thu, 06 Oct 2016 14:14:57 -0600 (time=1475784897)
 
 ?><div style="display:none" id="resizemod"></div>
 <div align="center"><span class="copyright"><br /><?php echo isset($this->vars['REPORT_LINK']) ? $this->vars['REPORT_LINK'] : $this->lang('REPORT_LINK'); ?><br /><br /><?php echo isset($this->vars['ADMIN_LINK']) ? $this->vars['ADMIN_LINK'] : $this->lang('ADMIN_LINK'); ?><br />

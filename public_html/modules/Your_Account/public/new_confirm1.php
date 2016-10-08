@@ -73,22 +73,9 @@ if (!defined('CNBYA')) {
         $rcode = hexdec(md5($_SERVER['HTTP_USER_AGENT'] . $sitekey . $_POST['random_num'] . $datekey));
         $code = substr($rcode, 2, $evoconfig['codesize']);
         //if (GDSUPPORT AND $code != $gfx_check AND ($ya_config['usegfxcheck'] == 1 OR $ya_config['usegfxcheck'] == 3)) {
-        $gfxchk = array(3,4,6);
+        $gfxchk = array(3,4,6,7);
         
-        $passedCaptcha = false;        
-        if(isset($_POST['g-recaptcha-response'])){
-			require_once('includes/classes/recaptcha_v2/autoload.php');
-			$recaptcha = new \ReCaptcha\ReCaptcha($evoconfig['recaptcha_private_key']);
-			$resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_HOST']);
-			if ($resp->isSuccess()) {
-				// verified!
-				$passedCaptcha = true;
-			} else {
-				$errors = $resp->getErrorCodes();
-			}
-		}
-        
-        if (!$passedCaptcha && !security_code_check($_POST['gfx_check'], $gfxchk)) {
+        if (!security_code_check_recaptcha() && !security_code_check($_POST['gfx_check'], $gfxchk)) {
             OpenTable();
             echo "<center><span class='title'><strong>"._ERRORREG."</strong></span><br /><br />";
             echo "<span class='content'>"._SECCODEINCOR."<br /><br />"._GOBACK."</span></center>";

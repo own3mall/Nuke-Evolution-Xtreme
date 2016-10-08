@@ -866,3 +866,12 @@ input.liteoption {
     text-decoration: underline;
     cursor: pointer;
 }
+
+/* own3mall overrides */
+img.blackdot{
+	width: 1px;
+	height: 27px;
+	border: 0px;
+	padding-left: 5px;
+	padding-right: 5px;
+}

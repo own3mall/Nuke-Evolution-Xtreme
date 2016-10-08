@@ -24,7 +24,7 @@
  * the Free Software Foundation; either version 2 of the license.
  */
 
-function printException(Exception $e) {
+function printException($e) {
 	ob_end_clean();
     ?>
     <!doctype html>

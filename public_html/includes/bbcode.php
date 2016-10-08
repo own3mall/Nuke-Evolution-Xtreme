@@ -768,7 +768,19 @@ function bbencode_first_pass($text, $uid)
     $text = preg_replace("#\[i\](.*?)\[/i\]#si", "[i:$uid]\\1[/i:$uid]", $text);
 
     // [img]image_url_here[/img] code..
-    $text = preg_replace("#\[img\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\]#sie", "'[img:$uid]\\1' . str_replace(' ', '%20', '\\3') . '[/img:$uid]'", $text);
+    
+    //Old
+    //$text = preg_replace("#\[img\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\]#sie", "'[img:$uid]\\1' . str_replace(' ', '%20', '\\3') . '[/img:$uid]'", $text);
+	
+	// own3mall 
+	// Good explanation here:  http://stackoverflow.com/questions/19245205/replace-deprecated-preg-replace-e-with-preg-replace-callback
+	// And here:  http://stackoverflow.com/questions/16445991/how-do-i-access-a-variable-inside-of-preg-replace-callback
+	// New
+	
+	$callback = function($m) use ($uid){ 
+		return "[img:$uid]" . $m[1] . str_replace(' ', '%20', $m[3]) . "[/img:$uid]"; 
+	};
+	$text = preg_replace_callback("#\[img\]((http|ftp|https|ftps)://)([^ \?&=\#\"\n\r\t<]*?(\.(jpg|jpeg|gif|png)))\[/img\]#si", $callback, $text);
 	
 /*****[START]******************************************
  [ Mod:     Lytebox Resize Images              v3.2.2 ]

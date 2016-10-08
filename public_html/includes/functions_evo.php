@@ -706,7 +706,7 @@ function ValidateURL($url, $type, $where) {
 /*****[BEGIN]******************************************
 [ Mod:    Advanced Security Code Control      v1.0.0 ]
 ******************************************************/
-function security_code($gfxchk, $size='normal', $force=0) {
+function security_code($gfxchk, $size='normal', $force=0, $miniMode = false) {
     global $evoconfig, $bgcolor2, $bgcolor1;
     
     $recapPriv = $evoconfig['recaptcha_private_key'];
@@ -714,20 +714,26 @@ function security_code($gfxchk, $size='normal', $force=0) {
     
     // Fallback
     if(((!isset($recapPriv) || empty($recapPriv)) || (!isset($recapPub) || empty($recapPub))) && $size == "recaptcha_v2"){
-		$size = 'stacked';
+		$size = 'normal';
 	}
     
     if(intval($gfxchk) == 0) {
         return '';
     }
-    if (!GDSUPPORT) {
+    
+    if (!GDSUPPORT && !GD_VERSION) {
         return '';
     }
     if (!$force) {
-        if (!in_array($evoconfig['usegfxcheck'],$gfxchk)) {
+        if (is_array($gfxchk) && !in_array($evoconfig['usegfxcheck'],$gfxchk)) {
+			print_r($gfxchk, true);
             return '';
         }
     }
+    
+    // Debug
+    //echo "setting is " . $evoconfig['usegfxcheck'] . " and mode is " . $size;
+    
     $code = '';
     if (defined('CAPTCHA')) {
         switch($size) {
@@ -755,12 +761,41 @@ function security_code($gfxchk, $size='normal', $force=0) {
                 $code .= "<img src='images/captcha.php?size=large' border='0' alt='"._SECURITYCODE."' title='"._SECURITYCODE."'>";
 				break;
 			case 'recaptcha_v2':
-				$code .= "<tr><td bgcolor='" . $bgcolor2 . "'><div class=\"textbold\">"._SECURITYCODE.":</div></td><td bgcolor='" . $bgcolor1 . "'>";
+				$additionalHTML = "";
+				
+				// Start the row for the table
+				$code .= "<tr>";
+				
+				// If mini mode is true, we just want to show the recaptcha space and resize it
+				if(!$miniMode){
+					$code .= "<td bgcolor='" . $bgcolor2 . "'><div class=\"textbold\">"._SECURITYCODE.":</div></td>";
+				}else{
+					$additionalHTML .= 'colspan="2"';
+				}
+				
+				$code .= "<td bgcolor='" . $bgcolor1 . "' " . $additionalHTML . ">";
 				// Include the recaptcha script
 				$code .= "<script src='https://www.google.com/recaptcha/api.js' async defer></script>";
+				
+				// Mini-mode give it a wrapper
+				if($miniMode){
+					$code .= '<div style="overflow: hidden; width:143px; height: 37px;">';
+				}
+				
 				// Render not a robot div
-				$code .= "<div class='g-recaptcha' data-sitekey='" . $recapPub . "' style='display: inline-block'></div>";
-				$code .= "</td></tr>";
+				$code .= "<div class='g-recaptcha' data-sitekey='" . $recapPub . "' style='display: inline-block;";
+				if($miniMode){
+					$code .= " transform:scale(0.47);-webkit-transform:scale(0.47);transform-origin:0 0;-webkit-transform-origin:0 0;";
+				}
+				$code .= "'></div>";
+				
+				// Mini-mode close the wrapper
+				if($miniMode){
+					$code .= '</div>';
+				}
+				
+				$code .= "</td>";
+				$code .= "</tr>";
 				break;
         }
     } else {
@@ -820,6 +855,24 @@ function security_code_check($gfx_code, $gfxchk) {
         unset($_SESSION['GFXCHECK']);
         return true;
     }
+}
+
+function security_code_check_recaptcha(){
+	global $evoconfig;
+	
+	$passedCaptcha = false;        
+    if(isset($_POST['g-recaptcha-response'])){
+		require_once('includes/classes/recaptcha_v2/autoload.php');
+		$recaptcha = new \ReCaptcha\ReCaptcha($evoconfig['recaptcha_private_key']);
+		$resp = $recaptcha->verify($_POST['g-recaptcha-response'], $_SERVER['REMOTE_HOST']);
+		if ($resp->isSuccess()) {
+			// verified!
+			$passedCaptcha = true;
+		} else {
+			$errors = $resp->getErrorCodes();
+		}
+	}
+	return $passedCaptcha;
 }
 /*****[END]********************************************
 [ Mod:    Advanced Security Code Control      v1.0.0 ]
@@ -1072,7 +1125,7 @@ function evo_mail($to, $subject, $content, $header='', $params='', $batch=false)
 	// Set the from email
 	if (!isset($nukeconfig['adminmail']) || empty($nukeconfig['adminmail']) || $nukeconfig['adminmail'] == 'webmaster@------.---'){
         if (!isset($board_config['board_email']) || empty($board_config['board_email']) || $board_config['board_email'] == 'Webmaster@MySite.com'){
-            $from = '';
+            $from = 'noreply@please-set-your-board-email.com';
         } else {
             $from = $board_config['board_email'];
         }

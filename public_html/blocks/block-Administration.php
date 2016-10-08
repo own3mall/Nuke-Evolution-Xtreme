@@ -94,7 +94,7 @@ if (is_admin()) {
                ."<tr><td>"._ADMIN_PASS."</td>"
                ."<td><input type=\"password\" name=\"pwd\" size=\"8\" maxlength=\"40\" /></td></tr>";
     $gfxchk = array(1,5,6,7);
-    $content .= security_code($gfxchk);
+    $content .= security_code($gfxchk, 'recaptcha_v2');
     $content .= "<tr><td>"
                ."<input type=\"hidden\" name=\"op\" value=\"login\" />"
                ."<input type=\"submit\" value=\""._LOGIN."\" />"
