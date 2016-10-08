@@ -1,2 +1,3 @@
 *.log
 public_html/config.php
+public_html/Zend/Cache/*
