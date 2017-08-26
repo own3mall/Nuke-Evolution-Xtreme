@@ -257,10 +257,10 @@ function manageShouts($page, $pruned) {
         if (!empty($shout['timestamp'])) {
             // reads unix timestamp and formats it to the viewer's timezone
             if (is_user()) {
-                $unixTime = shout_create_date($userinfo['user_dateformat'], $shout['timestamp'], $userinfo['user_timezone']);
+                $unixTime = EvoDate($userinfo['user_dateformat'], $shout['timestamp'], $userinfo['user_timezone']);
                 echo $unixTime;
             } else {
-                $unixTime = shout_create_date($board_config['default_dateformat'], $shout['timestamp'], $board_config['board_timezone']);
+                $unixTime = EvoDate($board_config['default_dateformat'], $shout['timestamp'], $board_config['board_timezone']);
                 echo "$unixTime";
             }
         } else {
