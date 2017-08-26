@@ -241,7 +241,7 @@ function liveNewsFeed(){
 		echo '<strong><font size="3">'._LIVESTREAM_TITLE.'</font></strong><br /><br />';
 		echo '<table width="100%" border="0" cellspacing="0" cellpadding="1">';
 		
-		if ($fp = fsockopen('evolution-xtreme.com', 80, $errno, $errstr, 10)) {
+		if ($fp = fsockopen('evolution-xtreme.com', 80, $errno, $errstr, 2)) {
 			fwrite($fp, "GET /feed.json HTTP/1.1\r\n");
 			fwrite($fp, "Host: www.evolution-xtreme.com\r\n");
 			fwrite($fp, "User-Agent: " . $_SERVER['HTTP_USER_AGENT'] . "\r\n");
