@@ -1,5 +1,22 @@
 <?php
 
+function isLinkInMessageText($text){
+	$pattern = '~[a-z]+://\S+~';
+	$num_found = preg_match_all($pattern, $text, $out);
+	if($num_found){
+		return true;
+	}
+	
+	// Do more generic check without the protocol
+	$pattern = '/(?:(ftp|http|https):\/\/)?(?:[\w-]+\.)+[a-z]+/mi';
+	$num_found_generic = preg_match_all($pattern, $text, $out2);
+	if($num_found_generic){
+		return true;
+	}
+	
+	return false;
+}
+
 function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid) {
 
     global $currentlang, $cache, $top_content, $mid_content, $bottom_content, $ShoutMarqueeheight, $nsnst_const, $userinfo, $prefix, $db, $top_out, $board_config;
@@ -327,6 +344,10 @@ function ShoutBox($ShoutSubmit, $ShoutComment, $shoutuid) {
 
 			if ($conf['anonymouspost'] == 'no' && $username == 'Anonymous') {
 					$ShoutError = _ONLYREGISTERED2;
+			}
+			
+			if(isLinkInMessageText($ShoutComment)){
+				$ShoutError = "Please do not use links or URLs in your message.&nbsp; We are not interested in solicitations.";
 			}
 
 			if (!$ShoutError) {
